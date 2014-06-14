@@ -1,4 +1,6 @@
+#!/usr/bin/env python
 #coding=utf-8
+
 import sys,threading
 from PyQt4 import QtGui, QtCore, uic
 # from PyQt4.QtCore import  QStringList,QCoreApplication
