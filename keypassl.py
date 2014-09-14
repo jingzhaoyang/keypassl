@@ -1,19 +1,22 @@
 #!/usr/bin/env python
 #coding=utf-8
 
-import sys,threading
+import sys
+import threading
+import time
+from PyQt4 import QtGui, QtCore, uic
+from pykeyboard import PyKeyboard
 from select import select
-import virtkey,time
 from kptool.keepassdb import keepassdb
 
 # password = raw_input('请输入密码：',)
-password = ""
+password = "" #个人私钥密码
+kdb_file = r"/tmp/kdb_file.kdb" #keepass v1版本密码文件路径
 
 def put_key(key):
-    v = virtkey.virtkey()
-    for i in str(key):
-        v.press_unicode(ord(i))
-        v.release_unicode(ord(i))
+    k = PyKeyboard()
+    k.type_string(key)
+
 class MyWindow( QtGui.QWidget ):
     def __init__( self ):
         super( MyWindow, self ).__init__()
@@ -37,7 +40,10 @@ class MyWindow( QtGui.QWidget ):
         menuBar = QtGui.QMenuBar()
         self.menu[0] = QtGui.QMenu('1',menuBar)
         old_level = 0
-        k = keepassdb.KeepassDBv1(r"/home/jing/文档/x-y-t.kdb", password)
+        try:
+            k = keepassdb.KeepassDBv1(kdb_file, password)
+        except:
+            sys.exit(1)
         for g in k.get_groups():
             self.menu[g['group_id']] = QtGui.QMenu(g['title'])
             self.get_userandpass(k,g['group_id'])
